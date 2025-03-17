@@ -1,12 +1,8 @@
 package com.example.lab7_pogoda.repository;
 
-import static android.content.ContentValues.TAG;
-
 import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
 import com.example.lab7_pogoda.api.ApiService;
 import com.example.lab7_pogoda.api.RetrofitClient;
 import com.example.lab7_pogoda.response.ForecastResponse;

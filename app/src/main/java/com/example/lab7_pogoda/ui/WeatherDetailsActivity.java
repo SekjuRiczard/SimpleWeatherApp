@@ -12,7 +12,6 @@ import com.example.lab7_pogoda.R;
 
 import com.example.lab7_pogoda.response.ForecastResponse;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -59,7 +58,6 @@ public class WeatherDetailsActivity extends AppCompatActivity {
         weatherViewModel.loadWeather(city);
 
 
-        // Obserwowanie zmian w danych
         weatherViewModel.getWeatherData().observe(this, weather -> {
             if (weather != null) {
                 cityName.setText(weather.getName());
@@ -94,27 +92,27 @@ public class WeatherDetailsActivity extends AppCompatActivity {
         int day = 1;
 
         for (ForecastResponse.WeatherData daily : forecast.getForecastList()) {
-            entries.add(new Entry(day, daily.getTemperature().getTemp())); // Dzień jako X, Temperatura jako Y
+            entries.add(new Entry(day, daily.getTemperature().getTemp()));
             day++;
         }
 
         LineDataSet dataSet = new LineDataSet(entries, "Temperatura (°C)");
-        dataSet.setColor(Color.BLUE); // Kolor linii
-        dataSet.setLineWidth(3f); // Grubość linii
-        dataSet.setCircleRadius(6f); // Rozmiar punktów
-        dataSet.setCircleColor(Color.RED); // Kolor punktów
-        dataSet.setDrawCircleHole(false); // Wypełnione punkty
-        dataSet.setValueTextSize(12f); // Rozmiar tekstu wartości
-        dataSet.setValueTextColor(Color.BLACK); // Kolor wartości
-        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); // Gładkie linie
-        dataSet.setDrawValues(true); // Pokazuj wartości na wykresie
-        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); // Płynne przejścia
-        dataSet.setCubicIntensity(0.2f); // Intensywność wygładzenia (0.1 - 1.0)
+        dataSet.setColor(Color.BLUE);
+        dataSet.setLineWidth(3f);
+        dataSet.setCircleRadius(6f);
+        dataSet.setCircleColor(Color.RED);
+        dataSet.setDrawCircleHole(false);
+        dataSet.setValueTextSize(12f);
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        dataSet.setDrawValues(true);
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        dataSet.setCubicIntensity(0.2f);
 
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
 
-        // Ustawienia wykresu
+
         lineChart.setDrawGridBackground(false);
         lineChart.getDescription().setText("Prognoza temperatury na 5 dni");
         lineChart.getDescription().setTextSize(14f);
@@ -123,49 +121,46 @@ public class WeatherDetailsActivity extends AppCompatActivity {
         lineChart.getLegend().setTextColor(Color.DKGRAY);
         lineChart.getLegend().setForm(Legend.LegendForm.LINE);
 
-        // Ustawienia osi X (dni)
+
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(12f);
         xAxis.setTextColor(Color.BLACK);
         xAxis.setDrawGridLines(true);
-        xAxis.setGranularity(1f); // Co 1 dzień
-        xAxis.setLabelCount(entries.size()); // Ustaw liczbę etykiet
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(getDaysLabels(forecast))); // Ustaw nazwy dni
+        xAxis.setGranularity(1f);
+        xAxis.setLabelCount(entries.size());
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(getDaysLabels(forecast)));
 
-        // Ustawienia osi Y (temperatura)
+
         YAxis leftAxis = lineChart.getAxisLeft();
         leftAxis.setTextSize(12f);
         leftAxis.setTextColor(Color.BLACK);
         leftAxis.setDrawGridLines(true);
-        leftAxis.setGranularity(1f); // Co 1 stopień
-        lineChart.getAxisRight().setEnabled(false); // Wyłącz prawą oś
+        leftAxis.setGranularity(1f);
+        lineChart.getAxisRight().setEnabled(false);
 
-        lineChart.invalidate(); // Odświeżenie wykresu
+        lineChart.invalidate();
     }
 
-    /**
-     * Generuje etykiety dni na osi X
-     */
+
+
+
     private List<String> getDaysLabels(ForecastResponse forecast) {
         List<String> labels = new ArrayList<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE", Locale.getDefault()); // Skróty dni np. "Pon", "Wt"
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE", Locale.getDefault());
 
         for (ForecastResponse.WeatherData daily : forecast.getForecastList()) {
-            labels.add(sdf.format(new Date(daily.getTimestamp() * 1000L))); // Konwersja czasu Unix na datę
+            labels.add(sdf.format(new Date(daily.getTimestamp() * 1000L)));
         }
         return labels;
     }
-
     public String formatUnixTime(Long dt, int timezoneOffset) {
         if (dt == null) return "Brak danych";
 
-        // Obliczamy czas lokalny
         long localTimeMillis = (dt + timezoneOffset) * 1000L;
 
-        // Formatowanie do HH:mm
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC")); // Ustawienie UTC jako bazowy czas
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         return sdf.format(new Date(localTimeMillis));
     }
